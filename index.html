@@ -3,160 +3,174 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-select=none">
-    <title>🚨 نظام ميراي - ملفات مسربة</title>
+    <title>🚨 MIRAI CORE - BLUEPRINTS LEAK</title>
     <style>
         :root {
-            --primary-color: #00ff66; /* لون الاختراق الأخضر */
-            --secret-color: #ff0033;  /* لون الملفات السرية المحظورة */
-            --bg-color: #020503;
+            --primary: #00ff66;
+            --bg: #050706;
+            --glow: rgba(0, 255, 102, 0.4);
         }
 
         body {
-            background-color: var(--bg-color);
-            color: var(--primary-color);
+            background-color: var(--bg);
+            color: var(--primary);
             font-family: 'Courier New', Courier, monospace, sans-serif;
-            margin: 0;
-            padding: 15px;
-            min-height: 100vh;
-            box-sizing: border-box;
-            display: flex;
-            flex-direction: column;
-            align-items: center;
+            margin: 0; padding: 15px;
+            min-height: 100vh; box-sizing: border-box;
+            display: flex; flex-direction: column; align-items: center;
+            position: relative;
         }
 
-        /* تأثير تشويش شاشات المراقبة العسكرية */
+        /* خطوط الشاشة العسكرية القديمة */
         body::before {
             content: " "; display: block; position: fixed;
             top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.4) 50%);
-            z-index: 10; background-size: 100% 4px; pointer-events: none;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%);
+            z-index: 20; background-size: 100% 4px; pointer-events: none;
         }
 
-        .hacker-panel {
-            border: 1px solid var(--primary-color);
-            background: rgba(0, 15, 5, 0.9);
-            box-shadow: 0 0 20px rgba(0, 255, 102, 0.3);
-            max-width: 900px; width: 100%;
-            padding: 20px; border-radius: 6px;
-            margin-top: 10px; text-align: center;
+        .hacker-box {
+            border: 2px solid var(--primary);
+            background: rgba(4, 10, 6, 0.95);
+            box-shadow: 0 0 25px var(--glow), inset 0 0 15px rgba(0, 255, 102, 0.1);
+            max-width: 800px; width: 100%;
+            padding: 25px; border-radius: 8px;
+            text-align: center; position: relative; z-index: 10;
         }
 
-        .panel-header {
-            font-size: 20px; font-weight: bold;
-            border-bottom: 2px dashed var(--primary-color);
-            padding-bottom: 10px; margin-bottom: 20px;
-            text-shadow: 0 0 10px var(--primary-color);
+        .header-title {
+            font-size: 22px; font-weight: bold; letter-spacing: 1px;
+            border-bottom: 2px dashed var(--primary);
+            padding-bottom: 12px; margin-bottom: 20px;
+            text-shadow: 0 0 8px var(--primary);
         }
 
-        /* أزرار التنقل بين التصميم العام والسري */
-        .tabs-container {
+        .tabs {
             display: flex; justify-content: center; gap: 15px; margin-bottom: 20px;
         }
 
-        .tab-btn {
-            background: transparent; color: var(--primary-color);
-            border: 1px solid var(--primary-color);
-            padding: 10px 20px; font-family: monospace; font-size: 15px;
-            cursor: pointer; transition: all 0.3s; width: 45%;
+        .btn-tab {
+            background: transparent; color: var(--primary);
+            border: 2px solid var(--primary);
+            padding: 12px 20px; font-family: monospace; font-size: 15px;
+            cursor: pointer; font-weight: bold; transition: all 0.3s; width: 48%;
         }
 
-        .tab-btn.active {
-            background: var(--primary-color); color: black;
-            box-shadow: 0 0 15px var(--primary-color); font-weight: bold;
+        .btn-tab.active {
+            background: var(--primary); color: #000;
+            box-shadow: 0 0 20px var(--primary);
         }
 
-        .tab-btn.secret-tab {
-            color: var(--secret-color); border-color: var(--secret-color);
-        }
+        /* تبويب الملف السري المحظور */
+        .btn-tab.secret { color: #ff0033; border-color: #ff0033; }
+        .btn-tab.secret.active { background: #ff0033; color: #fff; box-shadow: 0 0 20px #ff0033; }
 
-        .tab-btn.secret-tab.active {
-            background: var(--secret-color); color: white;
-            box-shadow: 0 0 15px var(--secret-color);
-        }
-
-        /* حاوية عرض تصاميم البرج */
-        .design-viewer {
-            border: 1px dashed rgba(0, 255, 102, 0.5);
+        /* منطقة عرض وتأثير مسح الصور */
+        .viewer-frame {
+            border: 1px solid rgba(0, 255, 102, 0.3);
             background: #000000; padding: 10px;
-            border-radius: 4px; min-height: 300px;
-            display: flex; justify-content: center; align-items: center;
-            position: relative; overflow: hidden;
+            border-radius: 6px; position: relative;
+            overflow: hidden; display: flex; flex-direction: column; align-items: center;
         }
 
-        .design-image {
-            max-width: 100%; max-height: 500px;
+        .blueprint-img {
+            max-width: 100%; max-height: 450px;
             object-fit: contain; display: none;
-            border: 1px solid #333;
+            z-index: 5;
         }
 
-        .design-image.active { display: block; animation: static-effect 0.4s ease; }
+        .blueprint-img.active { display: block; animation: glitch-appear 0.3s ease; }
 
-        .system-logs {
-            text-align: right; font-size: 13px; color: #88ff88;
-            background: rgba(0,0,0,0.4); padding: 10px;
-            margin-top: 15px; border-radius: 4px; max-height: 80px; overflow-y: auto;
+        /* تأثير خط مسح الليزر المتحرك */
+        .laser-line {
+            position: absolute; left: 0; width: 100%; height: 4px;
+            background: var(--primary); box-shadow: 0 0 15px var(--primary);
+            z-index: 8; top: 0;
+            animation: scan-move 3s linear infinite;
         }
 
-        @keyframes static-effect {
-            0% { opacity: 0.3; filter: brightness(2) contrast(2); }
-            50% { opacity: 0.7; filter: brightness(0.5); }
+        /* أزرار التحميل لأسفل الشاشة */
+        .download-btn {
+            margin-top: 20px; background: transparent;
+            color: var(--primary); border: 1px solid var(--primary);
+            padding: 10px 25px; font-size: 14px; font-weight: bold;
+            cursor: pointer; display: inline-flex; align-items: center; gap: 8px;
+            transition: all 0.2s; font-family: sans-serif;
+        }
+        .download-btn:hover { background: rgba(0, 255, 102, 0.1); box-shadow: 0 0 10px var(--primary); }
+
+        @keyframes scan-move {
+            0% { top: 0%; }
+            50% { top: 100%; }
+            100% { top: 0%; }
+        }
+
+        @keyframes glitch-appear {
+            0% { opacity: 0.5; filter: contrast(2) brightness(1.5); }
             100% { opacity: 1; filter: none; }
+        }
+
+        @media (min-width: 768px) {
+            .header-title { font-size: 26px; }
+            .hacker-box { padding: 40px; }
         }
     </style>
 </head>
 <body>
 
-    <div class="hacker-panel" id="mainPanel">
-        <div class="panel-header">📡 تم خرق النظام مركزي - مستخرج المخططات الهندسية</div>
+    <div class="hacker-box" id="panel">
+        <div class="header-title" id="headerText">⚙️ نظام الاختراق السلكي - مستخرج البيانات</div>
         
-        <!-- الأزرار التفاعلية للتبديل -->
-        <div class="tabs-container">
-            <button class="tab-btn active" onclick="switchDesign('general', this)">المخطط العام للبرج</button>
-            <button class="tab-btn secret-tab" onclick="switchDesign('secret', this)">⚠️ المخطط السري (المخترق)</button>
+        <div class="tabs">
+            <button class="btn-tab active" onclick="changeMode('general', this)">المخطط المعماري العام</button>
+            <button class="btn-tab secret" onclick="changeMode('secret', this)">⚠️ خرق ملف الاحتواء السري</button>
         </div>
 
-        <!-- نافذة استعراض المخططات -->
-        <div class="design-viewer">
-            <!-- صورة التصميم العام -->
-            <img id="generalDesign" class="design-image active" src="general.png" alt="المخطط العام لبرج ميراي">
+        <div class="viewer-frame" id="frame">
+            <!-- خط الليزر الوامض -->
+            <div class="laser-line" id="laser"></div>
             
-            <!-- صورة التصميم السري -->
-            <img id="secretDesign" class="design-image" src="secret.png" alt="المخطط المخترق السري لبرج ميراي">
+            <img id="imgGeneral" class="blueprint-img active" src="general.png" alt="General Plan">
+            <img id="imgSecret" class="blueprint-img" src="secret.png" alt="Secret Plan">
         </div>
 
-        <!-- أسطر الأوامر الوهمية لتعزيز الأجواء -->
-        <div class="system-logs" id="logBox">
-            [نظام]: تم الاتصال بنجاح بـ MIRAI_CORE_BACKUP...<br>
-            [تنبيه]: جاري استعراض المخطط العام الافتراضي المصرح به...
-        </div>
+        <!-- زر التحميل الديناميكي المتغير حسب المخطط المعروض -->
+        <a id="downloadLink" href="general.png" download="Mirai_General_Blueprint.png">
+            <button class="download-btn" id="dlBtn">📥 تحميل المخطط العام بدقة عالية</button>
+        </a>
     </div>
 
     <script>
-        function switchDesign(type, btn) {
-            // 1. إلغاء تفعيل كل الأزرار والصور أولاً
-            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-            document.querySelectorAll('.design-image').forEach(img => img.classList.remove('active'));
+        function changeMode(mode, btn) {
+            document.querySelectorAll('.btn-tab').forEach(b => b.classList.remove('active'));
+            document.querySelectorAll('.blueprint-img').forEach(i => i.classList.remove('active'));
             
-            const logBox = document.getElementById('logBox');
-            
-            // 2. تفعيل التبويب المختار
             btn.classList.add('active');
             
-            if(type === 'general') {
-                document.getElementById('generalDesign').classList.add('active');
-                document.getElementById('mainPanel').style.borderColor = '#00ff66';
-                document.getElementById('mainPanel').style.boxShadow = '0 0 20px rgba(0, 255, 102, 0.3)';
-                logBox.innerHTML += "<br>[نظام]: تم العودة للمخطط العام المفتوح.";
+            const panel = document.getElementById('panel');
+            const frame = document.getElementById('frame');
+            const laser = document.getElementById('laser');
+            const header = document.getElementById('headerText');
+            const dlBtn = document.getElementById('dlBtn');
+            const dlLink = document.getElementById('downloadLink');
+
+            if(mode === 'general') {
+                document.getElementById('imgGeneral').classList.add('active');
+                document.documentElement.style.setProperty('--primary', '#00ff66');
+                document.documentElement.style.setProperty('--glow', 'rgba(0, 255, 102, 0.4)');
+                header.innerText = "⚙️ نظام الاختراق السلكي - مستخرج البيانات";
+                dlBtn.innerText = "📥 تحميل المخطط العام بدقة عالية";
+                dlLink.href = "general.png";
+                dlLink.download = "Mirai_General_Blueprint.png";
             } else {
-                document.getElementById('secretDesign').classList.add('active');
-                // تحويل لون الإطار بالكامل للأحمر النيوني لإشعار القارئ بالخطر والاختراق الممنوع
-                document.getElementById('mainPanel').style.borderColor = '#ff0033';
-                document.getElementById('mainPanel').style.boxShadow = '0 0 20px rgba(255, 0, 51, 0.5)';
-                logBox.innerHTML += "<br><span style='color:#ff3333'>[تحذير]: تم فك تشفير شفرة الاحتواء الفيدرالي.. عرض المخطط السري السفلي!</span>";
+                document.getElementById('imgSecret').classList.add('active');
+                document.documentElement.style.setProperty('--primary', '#ff0033');
+                document.documentElement.style.setProperty('--glow', 'rgba(255, 0, 51, 0.5)');
+                header.innerText = "🚨 تحذير أمني: تم تسريب بيانات الغرفة المركزية";
+                dlBtn.innerText = "📥 تحميل الملف السري المسرب للبرج";
+                dlLink.href = "secret.png";
+                dlLink.download = "Mirai_RESTRICTED_Blueprint.png";
             }
-            
-            // جعل سجلات النظام تنزل لأسفل تلقائياً
-            logBox.scrollTop = logBox.scrollHeight;
         }
     </script>
 </body>
